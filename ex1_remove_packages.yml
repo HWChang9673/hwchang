@@ -1,0 +1,12 @@
+---
+- name: Remove deprecated or insecure packages
+  hosts: all
+  gather_facts: no
+  vars:
+    os_security_packages_list: ['xinetd', 'inetd', 'ypserv', 'telnet-server', 'rsh-server', 'prelink','open-vm-tools-desktop']
+
+  tasks:
+  - name: remove deprecated or insecure packages 
+    yum:
+      name: '{{ os_security_packages_list }}'
+      state: 'absent'

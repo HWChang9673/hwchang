@@ -1,0 +1,20 @@
+---
+- name: Accounts Have UID Set To 0
+  hosts: all
+  gather_facts: no
+  vars:
+    shell_awk: "awk -F: '($3 == \"0\" && $1 != \"root\" ) {print}' /etc/passwd"
+
+
+  tasks:
+  - name: Check uid is 0 in /etc/passwd
+    shell: "{{shell_awk}}"
+    changed_when: false
+    register: ret_result
+
+  - name: Display results
+    debug: 
+      msg: "{{ret_result.stdout}}"
+    when: ret_result.stdout != ""
+    changed_when: ret_result.stdout != ""
+

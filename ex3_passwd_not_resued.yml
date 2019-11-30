@@ -1,0 +1,23 @@
+---
+- name: Restricting Use of Previous Paswords
+  hosts: all
+  gather_facts: no
+      
+  tasks:
+  - name: Restricting Use of Previous Paswords
+    replace:
+      path: "/etc/pam.d/system-auth"
+      regexp: '^(password\s+sufficient\s+pam_unix\.so .+)(remember=\d+)?'
+      replace: '\1 remember=3'
+
+  - name: touch /etc/security/opasswd
+    file:
+      path: "/etc/security/opasswd"
+      state: touch
+      mode: "0700"
+
+  - name: Change password for 90 days
+    lineinfile:
+      dest: "/etc/login.defs"
+      regexp: "^PASS_MAX_DAYS "
+      line: "PASS_MAX_DAYS 90"
