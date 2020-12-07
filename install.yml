@@ -1,0 +1,23 @@
+---
+- name: Install packages on multiple system
+  hosts: dev,test,prod
+  tasks:
+  - name: Install the php and maiadb
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+    - php
+    - mariadb
+  - name: Install Development tools on dev group
+    yum: 
+      name: "@Development Tools"
+      state: latest
+    when: inventory_hostname in groups ['dev']
+  - name: Install all update
+    yum:
+      name: "*"
+      state: latest
+    when: inventory_hostname in groups ['dev']
+
+
