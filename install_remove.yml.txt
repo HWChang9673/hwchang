@@ -1,0 +1,35 @@
+---
+- name: Install/Remove packages by specified package name
+  hosts: all
+
+  vars:
+    packages: ''
+    action: ''
+
+  tasks:
+  - name: Check Action
+    fail:
+      msg: "No action defined."
+    when: action|length == 0
+
+  - name: Check packages
+    fail:
+      msg: "No packages defined."
+    when: packages|length == 0
+
+  - name: Convert packages string to package list
+    set_fact:
+      PACKAGE_LIST: "{{ packages.split(',') }}"
+
+  - name: Install packages
+    yum:
+      name: "{{ PACKAGE_LIST }}"
+      state: latest
+      update_cache: yes
+    when: action == 'add'
+
+  - name: Remove packages
+    yum:
+      name: "{{ PACKAGE_LIST }}"
+      state: absent
+    when: action == 'remove'
